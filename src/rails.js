@@ -297,23 +297,26 @@
       rails.enableElement($(this));
   });
 
-  $(document).delegate(rails.linkClickSelector, 'click.rails', function(e) {
-    var link = $(this), method = link.data('method'), data = link.data('params');
-    if (!rails.allowAction(link)) return rails.stopEverything(e);
+  rails.attachClickHandler = function(){
+    $(document).delegate(rails.linkClickSelector, 'click.rails', function(e) {
+      var link = $(this), method = link.data('method'), data = link.data('params');
+      if (!rails.allowAction(link)) return rails.stopEverything(e);
 
-    if (link.is(rails.linkDisableSelector)) rails.disableElement(link);
+      if (link.is(rails.linkDisableSelector)) rails.disableElement(link);
 
-    if (link.data('remote') !== undefined) {
-      if ( (e.metaKey || e.ctrlKey) && (!method || method === 'GET') && !data ) { return true; }
+      if (link.data('remote') !== undefined) {
+        if ( (e.metaKey || e.ctrlKey) && (!method || method === 'GET') && !data ) { return true; }
 
-      if (rails.handleRemote(link) === false) { rails.enableElement(link); }
-      return false;
+        if (rails.handleRemote(link) === false) { rails.enableElement(link); }
+        return false;
 
-    } else if (link.data('method')) {
-      rails.handleMethod(link);
-      return false;
-    }
-  });
+      } else if (link.data('method')) {
+        rails.handleMethod(link);
+        return false;
+      }
+    });
+  };
+  rails.attachClickHandler();
 
   $(document).delegate(rails.inputChangeSelector, 'change.rails', function(e) {
     var link = $(this);
